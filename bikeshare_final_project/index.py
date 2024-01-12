@@ -92,20 +92,46 @@ def load_data(city, month, day):
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['End Time'] = pd.to_datetime(df['End Time'])
 
+    monthIdx = MONTHS.index(month) + 1
+
+    """Need to check both start and end times, since the ride could go over midnight."""
+    df['Start Month'] = df['Start Time'].dt.month
+    df['End Month'] = df['End Time'].dt.month
+    
     if month != "all":
-        monthIdx = MONTHS.index(month) + 1
-        """Need to check both start and end times, since the ride could go over midnight."""
-        df = df[(df['Start Time'].dt.month == monthIdx) | (df['End Time'].dt.month == monthIdx)]
+        df = df[(df['Start Month'] == monthIdx) | (df['End Month'] == monthIdx)]
+
+    dayIdx = DAYS.index(day)
+
+    """Need to check both start and end times, since the ride could go over midnight."""
+    df['Start Day'] = df['Start Time'].dt.dayofweek
+    df['End Day'] = df['End Time'].dt.dayofweek
 
     if day != "all":
-        dayIdx = DAYS.index(day)
-        df = df[(df['Start Time'].dt.dayofweek == dayIdx) | (df['End Time'].dt.dayofweek == dayIdx)]
+        df = df[(df['Start Day'] == dayIdx) | (df['End Day'] == dayIdx)]
 
-    print(df.size)
-    print(df.head())
-    return
+    return df
 
 def time_stats(df):
+    """Displays statistics on the most frequent times of travel."""
+
+    print('\nCalculating The Most Frequent Times of Travel...\n')
+    start_time = time.time()
+
+    # times = df[['Start Month', 'End Month']]
+    # df.head()
+
+    start_month_mode, end_month_mode = df[['Start Month', 'End Month']].mode().values[0]
+
+    print(f"The most common month to start a ride was {MONTHS[start_month_mode - 1].title()}.")
+    print(f"The most common month to end a ride was {MONTHS[end_month_mode - 1].title()}.")
+
+    # display the most common day of week
+    # display the most common start hour
+
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-'*40)
+
     return df
 
 def station_stats(df):
@@ -123,11 +149,11 @@ def main():
         try:
 
             # query for user input
-            # city, month, day = get_filters()
+            city, month, day = get_filters()
 
-            # df = load_data(city, month, day)
-            df = load_data("chicago", "march", "all")
-            
+            df = load_data(city, month, day)
+            # df = load_data("washington", "all", "all")
+
             # run some analysis
             time_stats(df)
             # station_stats(df)
