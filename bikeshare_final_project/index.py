@@ -226,7 +226,7 @@ def user_stats(df):
 def see_raw_data(df):
     """Asks if the user wants to see the raw data in increments of 5"""
 
-    confirm = input('\nWould you like to see the raw data?')
+    confirm = input('\nWould you like to see the raw data? ')
     row_offset = 0
     row_step = 5
 
@@ -236,7 +236,7 @@ def see_raw_data(df):
         else:
             print(df.iloc[row_offset:row_offset + row_step])
             row_offset += row_step
-            confirm = input('\nWould you like to see more raw data? Yes or no. ')
+            confirm = input('\nWould you like to see more raw data? ')
 
 
 def main():
@@ -255,7 +255,7 @@ def main():
             trip_duration_stats(df)
             user_stats(df)
 
-            # see_raw_data(df)
+            see_raw_data(df)
 
             # restart the process if the user wants to continue
             restart = input('\nWould you like to run this again?\n')
